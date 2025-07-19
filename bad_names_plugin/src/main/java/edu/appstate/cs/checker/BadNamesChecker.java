@@ -58,18 +58,33 @@ public class BadNamesChecker extends BugChecker implements
         // method to see if it is acceptable.
 
         // TODO: What needs to be done here to check the name of the method?
-
+        Name methodName = methodTree.getName();
         // TODO: Remove this, if needed. This is just here because we need to return a Description.
-        return Description.NO_MATCH;
+        return checkName(methodTree, methodName);
     }
 
     private Description checkName(Tree tree, Name identifier) {
         // TODO: What other names are a problem? Add checks for them here...
+
+        String methodName = identifier.toString();
+
         if (identifier.contentEquals("foo")) {
             return buildDescription(tree)
                     .setMessage(String.format("%s is a bad identifier name", identifier))
                     .build();
         }
+
+    if (identifier.contentEquals("bar")) {
+        return buildDescription(tree)
+                    .setMessage(String.format("%s is a bad identifier name", identifier))
+                    .build();
+    }
+
+    if ((methodName.length() <= 3) || (methodName.length() >= 25)) {
+                return buildDescription(tree)
+                    .setMessage(String.format("%s is a bad identifier name", identifier))
+                    .build();
+    }
 
         return Description.NO_MATCH;
     }
