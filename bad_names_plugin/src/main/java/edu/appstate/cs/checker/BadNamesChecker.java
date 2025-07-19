@@ -23,7 +23,9 @@ import static com.google.errorprone.BugPattern.SeverityLevel.WARNING;
 public class BadNamesChecker extends BugChecker implements
         BugChecker.IdentifierTreeMatcher,
         BugChecker.MethodInvocationTreeMatcher,
-        BugChecker.MethodTreeMatcher {
+        BugChecker.MethodTreeMatcher,
+        BugChecker.ClassTreeMatcher,
+        BugChecker.VariableTreeMatcher {
 
     @java.lang.Override
     public Description matchIdentifier(IdentifierTree identifierTree, VisitorState visitorState) {
@@ -68,17 +70,11 @@ public class BadNamesChecker extends BugChecker implements
 
         String methodName = identifier.toString();
 
-        if (identifier.contentEquals("foo")) {
+        if (identifier.contentEquals("foo") || identifier.contentEquals("bar") || identifier.contentEquals("temp")) {
             return buildDescription(tree)
                     .setMessage(String.format("%s is a bad identifier name", identifier))
                     .build();
         }
-
-    if (identifier.contentEquals("bar")) {
-        return buildDescription(tree)
-                    .setMessage(String.format("%s is a bad identifier name", identifier))
-                    .build();
-    }
 
     if ((methodName.length() <= 3) || (methodName.length() >= 25)) {
                 return buildDescription(tree)
@@ -86,7 +82,31 @@ public class BadNamesChecker extends BugChecker implements
                     .build();
     }
 
+
+
         return Description.NO_MATCH;
+    }
+
+    @Override
+    public Description matchClass(ClassTree classTree, VisitorState visitorState) {
+        // MethodTree represents the definition of a method. We want to check the name of this
+        // method to see if it is acceptable.
+
+        // TODO: What needs to be done here to check the name of the method?
+        Name className = classTree.getSimpleName();
+        // TODO: Remove this, if needed. This is just here because we need to return a Description.
+        return checkName(classTree, className);
+    }
+
+    @Override
+    public Description matchVariable(VariableTree variableTree, VisitorState visitorState) {
+        // MethodTree represents the definition of a method. We want to check the name of this
+        // method to see if it is acceptable.
+
+        // TODO: What needs to be done here to check the name of the method?
+        Name variableName = variableTree.getName();
+        // TODO: Remove this, if needed. This is just here because we need to return a Description.
+        return checkName(variableTree, variableName);
     }
 
     private static final IllegalStateException malformedMethodInvocationTree(MethodInvocationTree tree) {
